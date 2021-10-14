@@ -5,18 +5,23 @@ import firebaseAuthentication from "../Pages/Login/Firebase/Firebase.init";
 firebaseAuthentication();
 
 const useFirebase = () => {
-  const [users, setUsers] = useState({});
+  const [user, setUser] = useState({});
   const auth = getAuth();
   const signInUsingGoogle =()=>{
     const googleProvider = new GoogleAuthProvider();
     signInWithPopup(auth, googleProvider)
     .then(result =>{
-        setUsers(result.user)
+        setUser(result.user)
     })
   }
  useEffect(()=>{
      const unsubscribed = onAuthStateChanged(auth,user=>{
-         user ? setUsers(user) : setUsers({})
+        if(user){
+            setUser(user);
+        }
+        else{
+            setUser({})
+        }
      })
      return () => unsubscribed;
  },[])
@@ -28,7 +33,7 @@ signOut(auth)
 }
 
   return {
-      users,
+      user,
       signInUsingGoogle,
       logOut
   }
